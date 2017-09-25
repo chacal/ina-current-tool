@@ -1,4 +1,5 @@
 import i2c = require('i2c-bus')
+import {EventEmitter} from 'events'
 
 export enum Registers {
   CONFIG = 0x00,
@@ -41,17 +42,48 @@ export enum OperationMode {
   SHUNT_AND_BUS_CONTINUOUS	  = 0x0007
 }
 
-export default class INA219 {
+export default class INA219 extends EventEmitter {
   private i2cBus: any
   private i2cAddress: number
+  private isSampling: boolean
 
   constructor(i2cBusNumber: number = 1, i2cAddress: number = 0x40) {
+    super()
     this.i2cBus = i2c.openSync(i2cBusNumber)
     this.i2cAddress = i2cAddress
+    this.isSampling = false
   }
 
   configure(gain: ShuntAdcGain, adcSettings: ShuntAdcSettings, mode: OperationMode): void {
     this.i2cBus.writeWordSync(this.i2cAddress, Registers.CONFIG, toMSB(gain + adcSettings + mode))
+  }
+
+  startSampling(interval: number = 0) {
+    if(this.isSampling) {
+      return
+    }
+
+    this.isSampling = true
+    const self = this
+
+    emitSample()
+
+    function emitSample() {
+      if(! self.isSampling) {
+        return
+      }
+
+      self.emit('sample', self.getRawShuntSample())
+      if(interval > 0) {
+        setTimeout(emitSample, interval)
+      } else {
+        setImmediate(emitSample)
+      }
+    }
+  }
+
+  stopSampling() {
+    this.isSampling = false
   }
 
   getRawShuntSample(): number {
