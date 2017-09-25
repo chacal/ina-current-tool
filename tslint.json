@@ -34,7 +34,6 @@
         "no-bitwise": true,
         "no-console": [
             true,
-            "log",
             "error",
             "debug",
             "info",
@@ -42,7 +41,7 @@
             "timeEnd",
             "trace"
         ],
-        "no-consecutive-blank-lines": true,
+        "no-consecutive-blank-lines": false,
         "no-construct": true,
         "no-debugger": true,
         "no-duplicate-variable": true,
@@ -89,7 +88,6 @@
             true,
             "check-branch",
             "check-decl",
-            "check-module",
             "check-operator",
             "check-separator",
             "check-type",
