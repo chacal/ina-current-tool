@@ -22,16 +22,16 @@
         "jsx-no-lambda": false,
         "jsx-no-multiline-js": false,
         "label-position": true,
-        "max-line-length": [ true, 120 ],
+        "max-line-length": [ true, 160 ],
         "member-ordering": [
             true,
             "public-before-private",
             "static-before-instance",
             "variables-before-functions"
         ],
-        "no-any": true,
+        "no-any": false,
         "no-arg": true,
-        "no-bitwise": true,
+        "no-bitwise": false,
         "no-console": [
             true,
             "error",
@@ -86,7 +86,6 @@
         "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore", "allow-pascal-case"],
         "whitespace": [
             true,
-            "check-branch",
             "check-decl",
             "check-operator",
             "check-separator",
