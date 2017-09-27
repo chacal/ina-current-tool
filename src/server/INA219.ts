@@ -64,6 +64,7 @@ export default class INA219 extends EventEmitter {
     }
 
     this.isSampling = true
+    this.configureForInterval(interval)
     const self = this
 
     emitSample()
@@ -88,6 +89,30 @@ export default class INA219 extends EventEmitter {
 
   getRawShuntSample(): number {
     return twosComplementToInt(toMSB(this.i2cBus.readWordSync(this.i2cAddress, Registers.SHUNT_VOLTAGE)))
+  }
+
+  private configureForInterval(sampleIntervalMs: number) {
+    this.configure(ShuntAdcGain.SHUNT_ADC_GAIN_1_40MV, adcSettingsForSampleInterval(sampleIntervalMs), OperationMode.SHUNT_CONTINUOUS)
+
+    function adcSettingsForSampleInterval(interval: number) {
+      if(interval <= 1) {
+        return ShuntAdcSettings.SHUNT_ADC_12BIT_1S_532US
+      } else if(interval <= 2) {
+        return ShuntAdcSettings.SHUNT_ADC_12BIT_2S_1060US
+      } else if(interval <= 4) {
+        return ShuntAdcSettings.SHUNT_ADC_12BIT_4S_2130US
+      } else if(interval <= 8) {
+        return ShuntAdcSettings.SHUNT_ADC_12BIT_8S_4260US
+      } else if(interval <= 16) {
+        return ShuntAdcSettings.SHUNT_ADC_12BIT_16S_8510US
+      } else if(interval <= 32) {
+        return ShuntAdcSettings.SHUNT_ADC_12BIT_32S_17MS
+      } else if(interval <= 64) {
+        return ShuntAdcSettings.SHUNT_ADC_12BIT_64S_34MS
+      } else {
+        return ShuntAdcSettings.SHUNT_ADC_12BIT_128S_69MS
+      }
+    }
   }
 }
 
