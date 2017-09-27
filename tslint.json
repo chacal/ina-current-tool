@@ -10,14 +10,12 @@
         "ban": false,
         "class-name": true,
         "comment-format": [
-            true,
-            "check-space"
+            true
         ],
         "curly": true,
         "eofline": false,
         "forin": true,
         "indent": [ true, "spaces" ],
-        "interface-name": [true, "never-prefix"],
         "jsdoc-format": true,
         "jsx-no-lambda": false,
         "jsx-no-multiline-js": false,

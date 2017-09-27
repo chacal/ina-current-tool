@@ -43,9 +43,9 @@ export enum OperationMode {
 }
 
 export default class INA219 extends EventEmitter {
+  isSampling: boolean
   private i2cBus: any
   private i2cAddress: number
-  private isSampling: boolean
 
   constructor(i2cBusNumber: number = 1, i2cAddress: number = 0x40) {
     super()
