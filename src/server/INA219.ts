@@ -67,6 +67,7 @@ export default class INA219 extends EventEmitter {
     this.configureForInterval(interval)
     const self = this
 
+    console.log(`INA219 sampling with ${interval}ms interval`)
     emitSample()
 
     function emitSample() {
@@ -85,6 +86,7 @@ export default class INA219 extends EventEmitter {
 
   stopSampling() {
     this.isSampling = false
+    console.log(`INA219 stopped sampling`)
   }
 
   getRawShuntSample(): number {
@@ -92,7 +94,9 @@ export default class INA219 extends EventEmitter {
   }
 
   private configureForInterval(sampleIntervalMs: number) {
-    this.configure(ShuntAdcGain.SHUNT_ADC_GAIN_1_40MV, adcSettingsForSampleInterval(sampleIntervalMs), OperationMode.SHUNT_CONTINUOUS)
+    const adcSettings = adcSettingsForSampleInterval(sampleIntervalMs)
+    this.configure(ShuntAdcGain.SHUNT_ADC_GAIN_1_40MV, adcSettings, OperationMode.SHUNT_CONTINUOUS)
+    console.log(`INA219 ADC set to ${ShuntAdcSettings[adcSettings]}`)
 
     function adcSettingsForSampleInterval(interval: number) {
       if(interval <= 1) {
