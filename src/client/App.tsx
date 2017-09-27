@@ -7,6 +7,7 @@ interface SamplingState {
 
 interface UIState extends SamplingState {
   interval: number
+  currentSample: Sample | undefined
 }
 
 
@@ -15,10 +16,10 @@ export default class App extends React.Component<{}, UIState> {
   constructor() {
     super()
     const io = SocketIO()
-    this.state = {sampling: false, interval: 100}
+    this.state = {sampling: false, interval: 100, currentSample: undefined}
 
     io.on('sampling-state', (state: SamplingState) => this.setState(state))
-    io.on('samples', (sample: Sample[]) => console.log(sample))
+    io.on('samples', (samples: Sample[]) => this.setState({currentSample: samples[samples.length - 1]}))
   }
 
   render() {
@@ -37,6 +38,7 @@ export default class App extends React.Component<{}, UIState> {
         </select>
         <button disabled={this.state.sampling} onClick={this.startSampling}>Start</button>
         <button disabled={!this.state.sampling} onClick={this.stopSampling}>Stop</button>
+        <span>{this.state.currentSample ? `${this.state.currentSample.value}µA (${new Date(this.state.currentSample.ts)})` : '-'}</span>
       </div>
     )
   }
