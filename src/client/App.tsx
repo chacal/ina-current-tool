@@ -24,13 +24,24 @@ export default class App extends React.Component<{}, UIState> {
   render() {
     return (
       <div className="App">
+        <select value={this.state.interval} onChange={evt => this.setState({interval: parseInt(evt.target.value, 10)})} disabled={this.state.sampling}>
+          <option value={0}>Realtime</option>
+          <option value={2}>2ms</option>
+          <option value={5}>5ms</option>
+          <option value={10}>10ms</option>
+          <option value={50}>50ms</option>
+          <option value={100}>100ms</option>
+          <option value={500}>500ms</option>
+          <option value={1000}>1s</option>
+          <option value={5000}>5s</option>
+        </select>
         <button disabled={this.state.sampling} onClick={this.startSampling}>Start</button>
         <button disabled={!this.state.sampling} onClick={this.stopSampling}>Stop</button>
       </div>
     )
   }
 
-  startSampling = () => httpPost('/start-sampling', {interval: 100})
+  startSampling = () => httpPost('/start-sampling', {interval: this.state.interval})
   stopSampling = () => httpPost('/stop-sampling')
 }
 
