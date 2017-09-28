@@ -38,15 +38,19 @@ export default class App extends React.Component<{}, UIState> {
         </select>
         <button disabled={this.state.sampling} onClick={this.startSampling}>Start</button>
         <button disabled={!this.state.sampling} onClick={this.stopSampling}>Stop</button>
-        <span>{this.state.currentSample ? `${this.state.currentSample.value}µA (${new Date(this.state.currentSample.ts)})` : '-'}</span>
+        <span>{renderSample(this.state.currentSample)}</span>
       </div>
     )
   }
 
   startSampling = () => httpPost('/start-sampling', {interval: this.state.interval})
   stopSampling = () => httpPost('/stop-sampling')
+
 }
 
+function renderSample(sample: Sample | undefined) {
+  return sample ? `${sample.value}µA (${sample.hrtime.seconds}s ${sample.hrtime.nanos}ns)` : '-'
+}
 
 function httpPost(url: string, payload: Object | undefined = undefined) {
   return fetch(url, {

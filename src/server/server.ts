@@ -19,7 +19,10 @@ let sampleBuffer: Sample[] = []
 
 
 server.listen(PORT, () => console.log(`Server listening on port ${PORT}`))
-ina219.on('sample', sample => sampleBuffer.push({ts: new Date().getTime(), value: sample}))
+ina219.on('sample', sample => {
+  const [seconds, nanos] = process.hrtime()
+  sampleBuffer.push({hrtime: {seconds, nanos}, value: sample})
+})
 
 
 app.use(express.static(path.resolve(__dirname, '..', '..')))

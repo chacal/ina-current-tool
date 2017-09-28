@@ -1,4 +1,9 @@
+interface HrTime {
+  seconds: number,
+  nanos: number
+}
+
 interface Sample {
   value: number,
-  ts: number
+  hrtime: HrTime
 }
