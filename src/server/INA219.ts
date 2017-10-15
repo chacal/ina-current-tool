@@ -100,6 +100,14 @@ export default class INA219 extends EventEmitter {
     const rawValue = twosComplementToInt(toMSB(this.i2cBus.readWordSync(this.i2cAddress, Registers.SHUNT_VOLTAGE)))
     return ((rawValue + this.calibration) * SHUNT_LSB_UV / this.resistorValue) / 1000 / 1000
   }
+
+  calibrate(resistorValue: number, calibration: number) {
+    if(resistorValue !== undefined) {
+      this.resistorValue = resistorValue
+    }
+    if(calibration !== undefined) {
+      this.calibration = calibration
+    }
   }
 
   private configureForInterval(sampleIntervalMs: number) {

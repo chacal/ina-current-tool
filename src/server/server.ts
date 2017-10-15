@@ -33,3 +33,8 @@ app.post('/stop-sampling', (req: Request, res: Response) => {
   streamSampler.stopSampling()
   res.status(204).end()
 })
+
+app.post('/calibrate', (req: Request, res: Response) => {
+  ina219.calibrate(req.body.resistor, req.body.calibration)
+  res.status(204).end()
+})
