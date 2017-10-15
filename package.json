@@ -9,6 +9,7 @@
     "@types/socket.io-client": "^1.4.30",
     "body-parser": "^1.18.2",
     "express": "^4.15.5",
+    "format-si-prefix": "^0.3.2",
     "i2c-bus": "^1.2.2",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",

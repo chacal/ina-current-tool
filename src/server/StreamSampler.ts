@@ -45,5 +45,5 @@ export default class StreamSampler {
     }
   }
 
-  private samplingState = () => ({sampling: this.ina219.isSampling})
+  private samplingState = () => ({sampling: this.ina219.isSampling, resistorValue: this.ina219.resistorValue, calibration: this.ina219.calibration})
 }
