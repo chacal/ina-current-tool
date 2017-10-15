@@ -1,6 +1,9 @@
 import i2c = require('i2c-bus')
 import {EventEmitter} from 'events'
 
+const DEFAULT_RESISTOR_VALUE = 0.1     // Use 0.1Ω resistor as default
+const SHUNT_LSB_UV           = 10      // INA219 has 10µV LSB step size
+
 export enum Registers {
   CONFIG = 0x00,
   SHUNT_VOLTAGE = 0x01,
@@ -44,6 +47,8 @@ export enum OperationMode {
 
 export default class INA219 extends EventEmitter {
   isSampling: boolean
+  resistorValue: number
+  calibration: number
   private i2cBus: any
   private i2cAddress: number
 
@@ -52,6 +57,8 @@ export default class INA219 extends EventEmitter {
     this.i2cBus = i2c.openSync(i2cBusNumber)
     this.i2cAddress = i2cAddress
     this.isSampling = false
+    this.resistorValue = DEFAULT_RESISTOR_VALUE
+    this.calibration = 0
   }
 
   configure(gain: ShuntAdcGain, adcSettings: ShuntAdcSettings, mode: OperationMode): void {
@@ -75,7 +82,7 @@ export default class INA219 extends EventEmitter {
         return
       }
 
-      self.emit('sample', self.getRawShuntSample())
+      self.emit('sample', self.getShuntCurrent())
       if(interval > 0) {
         setTimeout(emitSample, interval)
       } else {
@@ -89,8 +96,10 @@ export default class INA219 extends EventEmitter {
     console.log(`INA219 stopped sampling`)
   }
 
-  getRawShuntSample(): number {
-    return twosComplementToInt(toMSB(this.i2cBus.readWordSync(this.i2cAddress, Registers.SHUNT_VOLTAGE)))
+  getShuntCurrent(): number {
+    const rawValue = twosComplementToInt(toMSB(this.i2cBus.readWordSync(this.i2cAddress, Registers.SHUNT_VOLTAGE)))
+    return ((rawValue + this.calibration) * SHUNT_LSB_UV / this.resistorValue) / 1000 / 1000
+  }
   }
 
   private configureForInterval(sampleIntervalMs: number) {

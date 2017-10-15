@@ -13,6 +13,6 @@ export default class PeriodicSampler {
 
   start() {
     this.io.on('connection', () => console.log('Periodic client connected'))
-    setInterval(() => this.io.emit('periodic-sample', this.ina219.getRawShuntSample()), PERIODIC_SAMPLER_INTERVAL_MS)
+    setInterval(() => this.io.emit('periodic-sample', this.ina219.getShuntCurrent()), PERIODIC_SAMPLER_INTERVAL_MS)
   }
 }
