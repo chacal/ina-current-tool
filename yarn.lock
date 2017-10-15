@@ -2047,6 +2047,12 @@ form-data@~2.3.1:
     combined-stream "^1.0.5"
     mime-types "^2.1.12"
 
+format-si-prefix@^0.3.2:
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/format-si-prefix/-/format-si-prefix-0.3.2.tgz#2133565e72de2a38b8c7447c7424752f1da00f62"
+  dependencies:
+    parseunit "^0"
+
 forwarded@~0.1.0:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/forwarded/-/forwarded-0.1.2.tgz#98c23dab1175657b8c0573e8ceccd91b0ff18c84"
@@ -3938,6 +3944,10 @@ parseqs@0.0.5:
   dependencies:
     better-assert "~1.0.0"
 
+parseunit@^0:
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/parseunit/-/parseunit-0.3.1.tgz#46624e3af1608d3b053099aebc97422196af7ad4"
+
 parseuri@0.0.5:
   version "0.0.5"
   resolved "https://registry.yarnpkg.com/parseuri/-/parseuri-0.0.5.tgz#80204a50d4dbb779bfdc6ebe2778d90e4bce320a"
@@ -5090,7 +5100,7 @@ socket.io-parser@2.3.1:
     isarray "0.0.1"
     json3 "3.3.2"
 
-socket.io@1.7.4:
+socket.io@^1.7.4:
   version "1.7.4"
   resolved "https://registry.yarnpkg.com/socket.io/-/socket.io-1.7.4.tgz#2f7ecedc3391bf2d5c73e291fe233e6e34d4dd00"
   dependencies:

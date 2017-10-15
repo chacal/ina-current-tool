@@ -1,5 +1,6 @@
 import * as React from 'react'
 import FloatInput from './FloatInput'
+import {formatSI} from 'format-si-prefix'
 import SocketIO = require('socket.io-client')
 
 interface UIState extends SamplingState {
@@ -55,7 +56,7 @@ export default class App extends React.Component<{}, UIState> {
 }
 
 function renderSample(sample: Sample | undefined) {
-  return sample ? `${sample.value}µA (${sample.hrtime.seconds}s ${sample.hrtime.nanos}ns)` : '-'
+  return sample ? `${formatSI(sample.value)}A (${sample.hrtime.seconds}s ${sample.hrtime.nanos}ns)` : '-'
 }
 
 function httpPost(url: string, payload: Object | undefined = undefined) {
