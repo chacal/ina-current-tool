@@ -1,4 +1,5 @@
 import INA219 from './INA219'
+import PeriodicSampler from './PeriodicSampler'
 import bodyParser = require('body-parser')
 import {Request, Response} from 'express'
 import Timer = NodeJS.Timer
@@ -9,13 +10,11 @@ const path = require('path')
 
 const PORT = process.env.PORT || 3001
 const SAMPLE_EMIT_INTERVAL_MS = 10
-const PERIODIC_SAMPLER_INTERVAL_MS = 250
 
 const app = express()
 const server = require('http').createServer(app)
 const socketIOServer = require('socket.io')(server)
 const sampleStreamNamespace = socketIOServer.of('/sample-stream')
-const periodicSampleNamespace = socketIOServer.of('/periodic-samples')
 const ina219 = new INA219()
 let sampleEmitTimer: Timer
 let sampleBuffer: Sample[] = []
@@ -65,9 +64,5 @@ function samplingState() {
 }
 
 function startPeriodicSampler() {
-  periodicSampleNamespace.on('connection', () => {
-    console.log('Periodic client connected')
-  })
-
-  setInterval(() => periodicSampleNamespace.emit('periodic-sample', ina219.getRawShuntSample()), PERIODIC_SAMPLER_INTERVAL_MS)
+  new PeriodicSampler(socketIOServer, ina219).start()
 }
