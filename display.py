@@ -22,7 +22,6 @@ class PeriodicSampleNamespace(BaseNamespace):
 
     def on_sample(self, sample):
         with canvas(device) as draw:
-            print sample
             draw.text((3, 3), "Value: {}".format(sample), font=roboto, fill="white")
 
 
