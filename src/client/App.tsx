@@ -15,7 +15,7 @@ export default class App extends React.Component<{}, UIState> {
 
   constructor() {
     super()
-    const io = SocketIO()
+    const io = SocketIO('/sample-stream')
     this.state = {sampling: false, interval: 100, currentSample: undefined}
 
     io.on('sampling-state', (state: SamplingState) => this.setState(state))

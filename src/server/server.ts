@@ -13,6 +13,7 @@ const SAMPLE_EMIT_INTERVAL_MS = 5
 const app = express()
 const server = require('http').createServer(app)
 const socketIOServer = require('socket.io')(server)
+const sampleStreamNamespace = socketIOServer.of('/sample-stream')
 const ina219 = new INA219()
 let sampleEmitTimer: Timer
 let sampleBuffer: Sample[] = []
@@ -28,8 +29,7 @@ ina219.on('sample', sample => {
 app.use(express.static(path.resolve(__dirname, '..', '..')))
 app.use(bodyParser.json())
 
-
-socketIOServer.on('connection', (client: Socket) => {
+sampleStreamNamespace.on('connection', (client: Socket) => {
   console.log('Client connected')
   client.emit('sampling-state', samplingState())
 })
@@ -38,21 +38,21 @@ socketIOServer.on('connection', (client: Socket) => {
 app.post('/start-sampling', (req: Request, res: Response) => {
   ina219.startSampling(req.body.interval || 0)
   sampleEmitTimer = setInterval(emitBufferedSamples, SAMPLE_EMIT_INTERVAL_MS)
-  socketIOServer.emit('sampling-state', samplingState())
+  sampleStreamNamespace.emit('sampling-state', samplingState())
   res.status(204).end()
 })
 
 app.post('/stop-sampling', (req: Request, res: Response) => {
   ina219.stopSampling()
   clearInterval(sampleEmitTimer)
-  socketIOServer.emit('sampling-state', samplingState())
+  sampleStreamNamespace.emit('sampling-state', samplingState())
   res.status(204).end()
 })
 
 
 function emitBufferedSamples() {
   if(sampleBuffer.length > 0) {
-    socketIOServer.emit('samples', sampleBuffer)
+    sampleStreamNamespace.emit('samples', sampleBuffer)
     sampleBuffer = []
   }
 }
