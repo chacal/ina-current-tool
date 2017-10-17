@@ -60,9 +60,11 @@ export enum OperationMode {
 }
 
 export default class INA226 extends I2CCurrentMonitor {
+  private buf: Buffer
 
   constructor(i2cBusNumber: number = 1, i2cAddress: number = 0x40) {
     super(i2cBusNumber, i2cAddress)
+    this.buf = Buffer.alloc(2)
   }
 
   configure(busConversionTime: BusConversionTime, shuntConversionTime: ShuntConversionTime, avgMode: AveragingMode, operationMode: OperationMode): void {
@@ -70,7 +72,8 @@ export default class INA226 extends I2CCurrentMonitor {
   }
 
   getShuntCurrent(): number {
-    const rawValue = this.twosComplementToInt(this.toMSB(this.i2cBus.readWordSync(this.i2cAddress, Registers.SHUNT_VOLTAGE)))
+    this.buf.writeUInt16BE(this.i2cBus.readWordSync(this.i2cAddress, Registers.SHUNT_VOLTAGE), 0)
+    const rawValue = this.buf.readInt16LE(0)
     return ((rawValue + this.calibration) * SHUNT_LSB_UV / this.resistorValue) / 1000 / 1000
   }
 

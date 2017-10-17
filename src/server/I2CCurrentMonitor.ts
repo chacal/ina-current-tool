@@ -66,12 +66,4 @@ export default abstract class I2CCurrentMonitor extends EventEmitter {
   protected toMSB(word: number) {
     return ((word & 0xFF) << 8) + ((word >> 8) & 0xFF)
   }
-
-  protected twosComplementToInt(val: number) {
-    if(val >> 15 === 1) {
-      return -(~val & 0xff) - 1
-    } else {
-      return val
-    }
-  }
 }
