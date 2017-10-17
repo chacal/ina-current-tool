@@ -1,4 +1,4 @@
-import INA219 from './INA219'
+import INA226 from './INA226'
 import StreamSampler from './StreamSampler'
 import PeriodicSampler from './PeriodicSampler'
 import bodyParser = require('body-parser')
@@ -12,9 +12,9 @@ const app = express()
 const server = require('http').createServer(app)
 const socketIOServer = require('socket.io')(server)
 
-const ina219 = new INA219()
-const streamSampler = new StreamSampler(socketIOServer, ina219)
-const periodicSampler = new PeriodicSampler(socketIOServer, ina219)
+const ina226 = new INA226()
+const streamSampler = new StreamSampler(socketIOServer, ina226)
+const periodicSampler = new PeriodicSampler(socketIOServer, ina226)
 
 
 server.listen(PORT, () => console.log(`Server listening on port ${PORT}`))
@@ -35,6 +35,6 @@ app.post('/stop-sampling', (req: Request, res: Response) => {
 })
 
 app.post('/calibrate', (req: Request, res: Response) => {
-  ina219.calibrate(req.body.resistor, req.body.calibration)
+  ina226.calibrate(req.body.resistor, req.body.calibration)
   res.status(204).end()
 })
