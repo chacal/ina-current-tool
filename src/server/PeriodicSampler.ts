@@ -1,18 +1,18 @@
-import INA219 from './INA219'
+import I2CCurrentMonitor from './I2CCurrentMonitor'
 
 const PERIODIC_SAMPLER_INTERVAL_MS = 250
 
 export default class PeriodicSampler {
   private io: SocketIO.Namespace
-  private ina219: INA219
+  private monitor: I2CCurrentMonitor
 
-  constructor(socketIOServer: SocketIO.Server, ina219: INA219) {
+  constructor(socketIOServer: SocketIO.Server, monitor: I2CCurrentMonitor) {
     this.io = socketIOServer.of('/periodic-samples')
-    this.ina219 = ina219
+    this.monitor = monitor
   }
 
   start() {
     this.io.on('connection', () => console.log('Periodic client connected'))
-    setInterval(() => this.io.emit('periodic-sample', this.ina219.getShuntCurrent()), PERIODIC_SAMPLER_INTERVAL_MS)
+    setInterval(() => this.io.emit('periodic-sample', this.monitor.getShuntCurrent()), PERIODIC_SAMPLER_INTERVAL_MS)
   }
 }

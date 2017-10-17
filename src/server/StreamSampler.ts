@@ -1,38 +1,38 @@
-import INA219 from './INA219'
 import Timer = NodeJS.Timer
+import I2CCurrentMonitor from './I2CCurrentMonitor'
 
 const SAMPLE_EMIT_INTERVAL_MS = 10
 
 export default class StreamSampler {
   private io: SocketIO.Namespace
-  private ina219: INA219
+  private monitor: I2CCurrentMonitor
   private sampleEmitTimer: Timer
   private sampleBuffer: Sample[] = []
 
 
-  constructor(socketIOServer: SocketIO.Server, ina219: INA219) {
+  constructor(socketIOServer: SocketIO.Server, monitor: I2CCurrentMonitor) {
     this.io = socketIOServer.of('/sample-stream')
-    this.ina219 = ina219
+    this.monitor = monitor
 
     this.io.on('connection', (client: SocketIO.Socket) => {
       console.log('Stream client connected')
       client.emit('sampling-state', this.samplingState())
     })
 
-    this.ina219.on('sample', sample => {
+    this.monitor.on('sample', sample => {
       const [seconds, nanos] = process.hrtime()
       this.sampleBuffer.push({hrtime: {seconds, nanos}, value: sample})
     })
   }
 
   startSampling(interval: number) {
-    this.ina219.startSampling(interval)
+    this.monitor.startSampling(interval)
     this.sampleEmitTimer = setInterval(() => this.emitBufferedSamples(), SAMPLE_EMIT_INTERVAL_MS)
     this.io.emit('sampling-state', this.samplingState())
   }
 
   stopSampling() {
-    this.ina219.stopSampling()
+    this.monitor.stopSampling()
     clearInterval(this.sampleEmitTimer)
     this.io.emit('sampling-state', this.samplingState())
   }
@@ -45,5 +45,5 @@ export default class StreamSampler {
     }
   }
 
-  private samplingState = () => ({sampling: this.ina219.isSampling, resistorValue: this.ina219.resistorValue, calibration: this.ina219.calibration})
+  private samplingState = () => ({sampling: this.monitor.isSampling, resistorValue: this.monitor.resistorValue, calibration: this.monitor.calibration})
 }
