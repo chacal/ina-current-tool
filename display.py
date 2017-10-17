@@ -26,7 +26,7 @@ class PeriodicSampleNamespace(BaseNamespace):
     def format_sample(self, sample):
         if(abs(sample) < 1 / float(1000) / 1000):
             return str("%dnA" % round(sample * 1000 * 1000 * 1000))
-        elif(abs(sample) < 1 / float(10000)):
+        elif(abs(sample) < 1 / float(1000)):
             return str("%guA" % round(sample * 1000 * 1000, 2))
         elif(abs(sample) < 1):
             return str("%gmA" % round(sample * 1000, 2))
